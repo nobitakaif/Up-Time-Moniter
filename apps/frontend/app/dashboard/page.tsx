@@ -1,10 +1,13 @@
+
 "use client";
-import React, { useState, useMemo } from 'react';
+import { toast } from "sonner"
+import React, { useState, useMemo, useRef } from 'react';
 import { ChevronDown, ChevronUp, Globe, Plus, Moon, Sun } from 'lucide-react';
 import { useWebsites } from '@/hooks/useWebsite';
 import axios from 'axios';
 import { API_BACKEND_URL } from '@/config';
 import { useAuth } from '@clerk/nextjs';
+
 
 type UptimeStatus = "good" | "bad" | "unknown";
 
@@ -32,8 +35,19 @@ function UptimeTicks({ ticks }: { ticks: UptimeStatus[] }) {
 }
 
 function  CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (url: string | null) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null)
   const [url, setUrl] = useState('');
   if (!isOpen) return null;
+
+  const onAdd=()=>{
+    const value = inputRef.current?.value
+    if(!value){
+      toast.error("please add website name")
+      return 
+    }
+    onClose(url)
+    
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -49,6 +63,7 @@ function  CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (u
               placeholder="https://example.com"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              ref={inputRef}
             />
           </div>
           <div className="flex justify-end space-x-3 mt-6">
@@ -61,7 +76,7 @@ function  CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (u
             </button>
             <button
               type="submit"
-              onClick={() => onClose(url)}
+              onClick={onAdd}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
             >
               Add Website
@@ -130,6 +145,7 @@ function App() {
   const { getToken } = useAuth();
 
    const processedWebsites = useMemo(() => {
+    if (!websites) return [];
     return websites.map(website => {
       // Sort ticks by creation time
       const sortedTicks = [...website.ticks].sort((a, b) => 
@@ -222,8 +238,8 @@ function App() {
           </div>
         </div>
         
-        <div className="space-y-4">
-          {processedWebsites.map((website) => (
+        <div className="space-y-4 flex flex-col-reverse gap-4 ">
+          {processedWebsites.reverse().map((website) => (
             <WebsiteCard key={website.id} website={website} />
           ))}
         </div>

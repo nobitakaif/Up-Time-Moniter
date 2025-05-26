@@ -4,7 +4,7 @@ import { Activity, Bell, Clock, Server, ArrowRight, Check,  } from 'lucide-react
 import { useRouter } from 'next/navigation';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -167,7 +167,13 @@ function App() {
   );
 }
 
-function FeatureCard({ icon, title, description }) {
+type FeatureCardProps = {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+};
+
+function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
       <div className="mb-4">{icon}</div>
@@ -177,7 +183,14 @@ function FeatureCard({ icon, title, description }) {
   );
 }
 
-function PricingCard({ title, price, features, featured = false }) {
+type PricingCardProps = {
+  title: string;
+  price: number | string;
+  features: string[];
+  featured?: boolean;
+};
+
+function PricingCard({ title, price, features, featured = false }: PricingCardProps) {
   return (
     <div className={`p-8 rounded-lg ${
       featured
