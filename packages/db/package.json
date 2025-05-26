@@ -13,5 +13,8 @@
   },
   "dependencies": {
     "prisma": "^6.8.2"
+  },
+  "prisma":{
+    "seed":"./prisma/seed.ts"
   }
 }

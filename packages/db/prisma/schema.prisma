@@ -15,7 +15,7 @@ datasource db {
 
 model User{
   id          String      @default(uuid()) @id
-  email    String
+  email       String
 }
 
 model Website{
